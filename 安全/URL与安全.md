@@ -1,5 +1,5 @@
 # URL
- 本文章大部分内容引用自《白帽子讲浏览器安全》一书。
+ 本章大部分内容引用自《白帽子讲浏览器安全》一书。
 ## URL 的标准形式
  scheme://[user:password@]domain:port/path?query_string#fragments
 ## URL、字符集、URI
