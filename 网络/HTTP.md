@@ -37,4 +37,4 @@ QUIC (Quick UDP Internet Connections)是基于UDP的传输层协议，提供像 
 - 服务端发送 [FIN] ，进入 LAST_ACK 状态。
 - 客户端发送 [ACK] ，进入 TIME_WAIT 状态，服务端接受到数据包，关闭连接进入 CLOSE 状态。客户端等待固定时间后，未收到 ACK 包，便关闭连接。
 
-http 3.0 是基于 QUIC (UDP) 实现的，所以没有繁琐地创建连接的过程。
+### http 3.0 是基于 QUIC (UDP) 实现的，所以没有繁琐地创建连接的过程。
