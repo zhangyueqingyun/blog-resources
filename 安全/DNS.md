@@ -1,4 +1,4 @@
-# DNS 
+# DNS 和安全
 
 ## DNS 劫持和 DNS 污染
 ### DNS 劫持
