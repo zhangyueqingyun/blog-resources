@@ -3,8 +3,8 @@
 第二章 执行流程已经介绍了从 createApp 到 patchFn 的逻辑。本章接着执行流程讲 Vue3 组件的 diff 算法。
 ## 源码解析
 processComponent: 
-- 旧节点不存在，调用 mountComponent
-- 旧节点存在，调用 updateComponent
+- 若不存在旧节点，调用 mountComponent 函数。
+- 若存在旧节点，调用 updateComponent 函数。
 ~~~typescript
 /**
  * module   : runtime-core
@@ -50,6 +50,9 @@ const processComponent = (
 }
 ~~~
 ### 挂载阶段
+mountComponent:
+- 创建 instance 实例。
+- 调用 setupRenderEffect 函数。
 ~~~typescript
 /**
  * module   : runtime-core
@@ -86,6 +89,22 @@ const mountComponent: MountComponentFn = (
     )
 }
 ~~~
+setupRenderEffect：
+- 创建 componentUpdateFn 内部函数。
+- 将 componentUpdateFn 包装为 update 函数，并赋值给 instance.update。
+- 调用 update
+
+componentUpdateFn:
+#### 实例未挂载
+* 调用 renderComponentRoot 函数。
+* 调用 patch 函数 patch 子树。
+* 调用 hooks 钩子。
+* 标记实例未已挂载。
+#### 实例已挂载
+* 调用 renderComponentRoot 获取新子树。
+* 调用 patch 函数 patch 旧子树和新子树。
+* 调用 hooks 钩子。
+
 ~~~typescript
 /**
  * module   : runtime-core
@@ -238,6 +257,10 @@ const setupRenderEffect: SetupRenderEffectFn = (
 }
 ~~~
 ### 更新阶段
+updateComponent:
+* 通过 shouldUpdateComponent 函数判断是否需要更新。
+* 若需要更新，调用 instance.update 方法。
+* 若不需要更新，将旧节点替换为新节点。
 ~~~typescript
 /**
  * module   : runtime-core
