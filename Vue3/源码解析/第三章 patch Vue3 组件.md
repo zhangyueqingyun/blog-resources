@@ -227,9 +227,10 @@ const setupRenderEffect: SetupRenderEffectFn = (
         }
     }
     const effect = (instance.effect = new ReactiveEffect(
-            componentUpdateFn,
-            () => queueJob(update),
-            instance.scope))
+        componentUpdateFn,
+        () => queueJob(update),
+        instance.scope
+    ))
     const update: SchedulerJob = (instance.update = () => effect.run())
     update.id = instance.uid
     toggleRecurse(instance, true)
