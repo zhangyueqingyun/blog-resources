@@ -1,0 +1,27 @@
+# 观察者模式
+一对多的关系中，当目标对象产生不同事件时，会将事件派发至所有注册的观察者对象中。
+## 解决问题
+降低观察者和配观察者之间的耦合度。
+## Js 实现
+~~~javascript
+class Subject {
+    #listeners = {}
+
+    on(name,observer,callback) {
+        this.#listeners[name] ??= []
+        this.#listeners.[name].push({observer, callback})
+    }
+    
+    emit(event) {
+        this.#listeners[name]?.forEach(({callback}) => {
+            callback(event)
+        })
+    }
+    
+    off(name, observer, callback) {
+        this.#listeners[name] = this.#listeners[name]?.filter(function ({observer, callback}) {
+            return observer === observer && listener.callback === callback
+        })
+    }
+}
+~~~
