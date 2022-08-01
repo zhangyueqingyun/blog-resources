@@ -14,11 +14,27 @@ BFC，即块级格式化上下文，它既不是 css 的一个属性，也不是
 - BFC 的区域不会与外面的浮动元素重叠
 - 计算 BFC 高度时包含浮动子元素的高度
 ### 如何产生 BFC 
+#### 总结
 - 根元素
 - float 的属性不为 none
 - position: absolute 或 fixed
 - display: inline-block table-cell table-caption flex
 - overflow 不为 visible 的块级元素
+#### 详细
+- 根元素
+- 浮动元素
+- 绝对定位元素
+- 行内块元素
+- 表格单元格
+- 表格标题
+- 匿名表格单元格
+- overflow 不为 visible 
+- display 为 flow-root 
+- contain 值为 flow-root 的元素 
+- 弹性元素（display 为 flex 或 inline-flex 元素的直接子元素）
+- 网格元素（display 为 grid 或 inline-grid 元素的直接子元素）
+- 多列容器（元素的 column-count 或 column-width 不为 auto，包括 column 为 1）
+- column-span 为 all 的元素始终会创建一个新的 BFC, 即使该元素没有包裹在一个多列容器中。
 ### BFC 用途
 - 清除内部浮动
 - 解决外边距重叠
