@@ -44,3 +44,12 @@ const router = new Router({
     ]
 }) 
 ~~~
+## 文件缓存优化
+缓存方案
+- HTML 使用协商缓存
+- CSS、JS 和图片使用强缓存，文件命名带上 hash 值。
+
+webpack 提供了三种哈希值的计算方式，分别是 hash、chunkhash 和 contenthash
+- hash 跟整个项目的构建相关，构建生成的文件 hash 值相同
+- chunkhash 根据不同的入口文件进行依赖分析，构建对应的 chunk 生成hash 
+- contenthash 由文件内容产生的 hash 值，内容不同产生的 content hash 值也不一样。
