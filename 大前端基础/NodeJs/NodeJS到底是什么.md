@@ -1,5 +1,5 @@
 # NodeJS 到底是什么？
--（Node.js 弊端）参考 CSDN 耳双月月鸟儿 -《Node.js的特点及应用场景》
+- （Node.js 弊端）参考 CSDN 耳双月月鸟儿 -《Node.js的特点及应用场景》
 - libuv 阶段和实现、NodeJS 启动流程参考 灰信网 - NODEJS 如何利用 LIBUV 实现事件循环和异步
 ## 利用 JavaScript 和操作系统交互
 JavaScript 语言是一门解释型的脚本语言，最初只内嵌在浏览器端改变页面样式。NodeJS 是基于 v8 的 JavaScript 解释器（运行环境），使 JavaScript 可以脱离浏览器环境运行，真正成为门一个计算机语言。
