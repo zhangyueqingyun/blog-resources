@@ -1,5 +1,5 @@
 # vue3 响应式api
-## ref 
+## 一、ref 
 接受一个内部值，返回一个响应式的、可更改的ref 对象，此对象只有一个指向其内部值的属性.value。
 
 ref 对象可更改的，可以为 .value 赋予新的值。它也是响应式的，即所有对 .value 的操作都将被追踪，并且写操作会触发与之相关的副作用。
@@ -30,7 +30,7 @@ year.value = 2020;
 const n = ref<number>()
 ~~~
 
-## computed 
+## 二、computed 
 接收一个 getter 函数，返回一个只读的响应式 ref 对象。该 ref 通过 .value 暴露 getter 函数的返回值，它也可以接受一个带有 get 和 set 函数的对象来创建一个可写的 ref 对象。
 ~~~javascript
 const count = ref(1);
@@ -58,7 +58,7 @@ const double = computed<number>(() => {
 
 })
 ~~~
-## reactive 
+## 三、reactive 
 返回一个对象的响应式代理，响应式转换是深层的，它会影响到所有嵌套的属性。一个响应式对象也将深层的解包任何 ref 属性，同时保持响应性。
 
 当访问到某个响应式数组或者像 Map 这样的原生集合类型中的 ref 元素时，不会执行 ref 的解包。
@@ -100,7 +100,7 @@ obj.count = count;
 console.log(obj.count);
 console.log(obj.count === count.value);
 ~~~
-## readonly
+## 四、readonly
 接受一个对象或ref，返回一个原值的只读代理。该只读代理是深层的，对任何嵌套属性的访问都将是只读的，它的 ref 解包行为与 reactive 相同，但解包得到的值时只读的。
 
 ~~~javascript
@@ -114,7 +114,7 @@ watchEffect(() => {
 original.count++;
 copy.count++;
 ~~~
-## watchEffect 
+## 五、watchEffect 
 立即运行一个函数，同时响应式地追踪其依赖，并在依赖更改时重新执行。
 
 第一个参数就是要运行的副作用函数，这个副作用函数的参数也是一个函数，用来注册清理回调。清理回调会在该副作用下一次执行前被调用，可以用来清理无效地副作用。例如等待中的异步请求。
@@ -140,11 +140,11 @@ cosnt stop2 = watchEffect(async (onCleanup) => {
 stop1();
 stop2();
 ~~~
-## watchPostEffect
+## 六、watchPostEffect
 侦听器延迟到组件渲染后执行
-## watchSyncEffect
+## 七、watchSyncEffect
 侦听器立刻执行
-## watch 
+## 八、watch 
 侦听一个或多个响应式数据源，并在数据源变化时调用所给的回调函数。
 ### 侦听器的源
 - 函数返回一个值
