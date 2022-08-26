@@ -12,19 +12,6 @@ console.log(count.value);
 count.value++;
 console.log(count.value);
 ~~~
-### 为 ref 标注类型
-~~~javascript
-import { ref } from 'vue';
-import type { Ref } from；'vue';
-
-const year: Ref<string | number> = ref(2020);
-year.value = '2020';
-
-// 或者
-
-const year = ref<string | number>('2020');
-year.value = 2020;
-~~~
 如果指定了一个泛型参数但没有给出初始值，那么最后得到的就将是一个包含 undefined 的联合类型
 ~~~javascript
 const n = ref<number>()
@@ -51,13 +38,6 @@ const plusOne = computed({
 plusOne.value = 1;
 console.log(count.value);
 ~~~
-### 为 computed 标注类型
-computed 会自动从其计算函数的返回值上推导出类，可以用泛型参数显示指定类型
-~~~javascript
-const double = computed<number>(() => {
-
-})
-~~~
 ## 三、reactive 
 返回一个对象的响应式代理，响应式转换是深层的，它会影响到所有嵌套的属性。一个响应式对象也将深层的解包任何 ref 属性，同时保持响应性。
 
@@ -70,7 +50,7 @@ const double = computed<number>(() => {
 const obj = reactive({count: 0});
 obj.count++;
 ~~~
-### ref 的解包
+ref 的解包
 ~~~javascript
 const count = ref(1);
 const obj = reactive({count});
