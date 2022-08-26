@@ -10,6 +10,7 @@
 ### 副作用
 - useEffect
 - useLayoutEffect
+- useInsertionEffect
 ### 优化
 - useCallback
 - useMemo 
@@ -20,9 +21,9 @@
 - useDebugValue
 ### 过渡
 - useTransition
-### 内部 hooks 
+### 服务端渲染
+### 其他 hooks 
 - useSyncExternalStore
-- useInsertionEffect
 ## 详解
 ### 状态 hooks 
 #### useState 
@@ -168,6 +169,8 @@ useEffect(() => {
 当没有依赖项时，副作用会每次调用。当有依赖项时，副作用会在依赖项改变时调用。
 #### useLayoutEffect 
 副作用同步模式的实现。在使用不能推迟执行的副作用时调用该 api。
+#### useInsertionEffect
+和 useEffect 用法一致，在 useLayoutEffect 之前执行，不能使用 ref 和调度更新。一般用来注入样式，适用于 css-in-js 这种库。
 ### 优化
 #### useCallback 
 对函数性能的优化，以防每次更新重复生成函数。
@@ -182,5 +185,98 @@ const memoIzedCallback = useCallback(
 #### useMemo 
 使用计算状态，当依赖不改变时，使用缓存的值。如果不提供依赖数组，则每次都会计算。
 ~~~javascript
-const memoIzedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 ~~~
+### 引用
+#### useRef
+useRef 会返回一个可变引用对象，返回的对象会在组件整个生命周期存在。
+~~~jsx
+function TextInputWithFocusButton() {
+    const inputEl = useRef(null);
+    const onButtonClick = () => {
+        inputEl.current.focus();
+    };
+
+    return (<>
+        <input ref={inputEl} type="text" />
+        <button onClick={onButtonClick}>Focus the input</button>
+    </>)
+}
+~~~
+#### callbackRef
+~~~jsx 
+function MesureExample() {
+    const [height, setHeight] = useState(0);
+
+    const measuredRef = useCallback(node => {
+        if(node !== null) {
+            setHeight(node.getBoundingClientRect().height);
+        }
+    }, []);
+    return (
+        <>
+            <h1 ref={measuredRef}>hello, world</h1>
+            <h2>The above header is {Math.round(height)}px tall</h2>
+        </>
+    )
+}
+~~~
+#### useImpretiveHandle 
+自定义 react 组件暴露给父组件的引用
+~~~javascript
+function FancyInput(props, ref) {
+    const inputRef = useRef();
+    useImperativeHandle(ref, () => ({
+        focus: () => {
+            inputRef.current.focus();
+        }
+    }));
+    return <input ref={inputRef} />
+}
+FancyInput = forwardRef(FancyInput);
+~~~
+### 调试
+useDebugValue 用于在 React 开发者工具中显示自定义 Hooks 标签。
+### 过渡
+~~~jsx
+function App() {
+    const [isPending, startTransition] = useTransition();
+    const [count, setCount] = useState(0);
+
+    function handleClick() {
+        startTransition(() => {
+            setCount(c => c + 1);
+        })
+    }
+
+    return (
+        <div>
+            {isPending && <Spinner />}
+            <button onClick={handleClick}>{count}</button>
+        </div>
+    )
+} 
+~~~
+### 服务端渲染
+#### useId 
+生成服务端客户端相同的唯一的id, 放置注水错误的匹配。
+~~~javascript 
+function Checkbox() {
+    const id = useId();
+    return (
+        <>
+            <label htmlFor={id}> Do you like React?</label>
+            <input id={id} type="checkbox" name="react" />
+        </>
+    )
+}
+~~~
+## 其他 hooks
+### useSyncExternalStore 
+订阅外部数据源
+~~~javascript
+const selectedField = useSyncExternalStore(
+    store.subscribe,
+    () => store.getSnapshot(). selectedField,
+    () => INITIAL_SERVER_SNAPSHOT.selectedField
+)
