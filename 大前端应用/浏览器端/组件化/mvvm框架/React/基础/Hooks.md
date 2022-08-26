@@ -6,7 +6,7 @@
 - useContext
 - useRef
 - useDefferedValue
-- useMemo
+- useMemo (其实该按优化分类，但也可这么用，react 框架会在一些情况下自动抛弃缓存数据，重新计算)
 ### 副作用
 - useEffect
 - useLayoutEffect
@@ -145,6 +145,39 @@ function Typeahead() {
             </Suspense>
     )
 }
+~~~
+#### useMemo 
+使用计算状态，当依赖不改变时，使用缓存的值。如果不提供依赖数组，则每次都会计算。
+~~~javascript
+const memoIzedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+~~~
+### 副作用
+#### useEffect
+副作用功能并发模式的实现 (mutation, subscription, timers, logging) 
+
+当组件渲染到屏幕上后，会调用副作用功能。当组件被卸载时会执行函数返回的清理函数。
+~~~javascript
+useEffect(() => {
+    const subscription = props.source.subscrive();
+    // 清理函数
+    return () => {
+        subscription.unsubscribe();
+    };
+});
+~~~
+当没有依赖项时，副作用会每次调用。当有依赖项时，副作用会在依赖项改变时调用。
+#### useLayoutEffect 
+副作用同步模式的实现。在使用不能推迟执行的副作用时调用该 api。
+### 优化
+#### useCallback 
+对函数性能的优化，以防每次更新重复生成函数。
+~~~javascript
+const memoIzedCallback = useCallback(
+    () => {
+        doSomething(a, b);
+    },
+    [a, b]
+);
 ~~~
 #### useMemo 
 使用计算状态，当依赖不改变时，使用缓存的值。如果不提供依赖数组，则每次都会计算。
