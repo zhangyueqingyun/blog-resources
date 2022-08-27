@@ -291,3 +291,46 @@ scope.stop();
 
 这个方法可作为复用的组合式函数中的 onMounted 的替代品，它不与组件耦合，因为每个 Vue 组件的 setup 函数也是在一个 effect 作用域内调用的。
 
+## 十九、isRef 
+检查某个值是否为 ref 
+~~~javascript 
+let foo;
+if(isRef(foo)) {}
+~~~
+
+## 二十、unRef 
+解包 ref， 是以下代码的语法糖
+~~~javascript 
+val = isRef(val) ? val.value : val;
+~~~
+使用 
+~~~javascript 
+function useFoo(x, y) {
+    const unwrapped = unref(x);
+}
+~~~
+
+## 二十一、toRef
+创建响应式属性的引用，使其保持同步。
+~~~javascript
+const state = reactive({foo: 1, bar: 2});
+const fooRef = toRef(state, 'foo');
+fooRef.value++;
+console.log(state.foo); //2
+state.foo++;
+console.log(fooRef.value); //3 
+~~~
+
+## 二十二、toRefs
+将一个响应式对象转为普通对象，这个普通对象的每个属性都是指向源对象相应的 ref。每个单独的 ref 都是使用 toRef() 创建的。
+~~~javascript
+const state = reactive({foo: 1, bar: 2});
+const {foo, bar} = toRefs(state); 
+~~~
+
+## 二十三、isProxy
+检查一个对象是否是由 reactive、readonly、shallowReactive、shallowReadonly 创建的代理。
+## 二十四、isReactive 
+检查一个对象是否是由 reactive 或 shallowReactive 创建的代理。
+## 二十五、isReadonly 
+检查一个对象是否是由 readonly 或 shallowReadonly 创建的代理。
