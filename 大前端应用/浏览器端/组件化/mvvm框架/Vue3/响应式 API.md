@@ -160,3 +160,134 @@ watch(count, {count, prevCount} => {});
 
 watch([fooRef, barRef], ([foo, bar], [prevFoo, prevBar]) => {})
 ~~~
+## 九、shallowRef 
+ref 的浅层作用形式，只对 .value 的访问时响应式的，其他原样不变。常常用于对大型数据结构的性能优化或是与外部状态管理系统的集成。
+~~~javascript
+const state = shallowRef({count: 1});
+// 不会触发更改
+state.value.count = 2;
+// 会触发更改
+state.value = {count: 2};
+~~~
+## 十、triggerRef
+强制触发依赖于一个浅层 ref 的副作用，这通常在对浅引用的内部值进行深度变更时使用。
+~~~JavaScript
+const shallow = shallowRef({
+    greet: 'Hello, world'
+});
+
+watchEffect(() => {
+    console.log(shallow.value.greet)
+})
+
+shallow.value.greet = 'Hello, universe'
+
+triggerRef(shallow)
+~~~
+## 十一、customRef
+创建一个自定义的 ref，显示声明对其以来追踪和更新触发的控制方式。
+
+预期接受一个工厂函数作为参数，这个工厂函数接受 track 和 trigger 两个函数作为参数，并返回一个带有 get 和 set 方法的对象。
+
+一般来说，track() 应该在 get() 方法中调用，而 trigger() 应该在 set 中调用，然而事实上，你可以对什么时候调用，是否应该调用他们拥有绝对的控制权。
+~~~javascript
+export function useDebouncedRef(value, delay = 200) {
+    let timeout;
+    return customRef({track, trigger} => {
+        return {
+            get() {
+                track();
+                return value;
+            },
+            set(newValue) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    value = newValue;
+                    trigger();
+                }, delay);
+            }
+        }
+    })
+}
+~~~
+在组件中使用
+~~~
+<script setup>
+import {useDebouncedRef} from './debounceREf';
+const text = useDebouncedRef('hello');
+<script>
+<template>
+    <input v-model="text" />
+</template>
+~~~
+## 十二、shalowReactive 
+reactive 的浅层作用形式，只有根级别的属性时响应式的，其他属性的值会被原样存储和暴露，值为 ref 的属性不会被自动解包了。
+
+浅层数据结构应该只用于组件的根级数据，将其嵌套在深层次的响应式对象中，会使创建的树由不一致的响应行为，可能很难理解和调试。
+~~~javascript
+const state = shallowReactive({
+    foo: 1,
+    nested: {
+        bar: 2
+    }
+});
+
+state.foo++; // 响应式
+isReative(state.nested); // false
+state.nest.bar++; // 非响应式 
+~~~
+## 十三、shallowReadonly
+readonly 的浅表作用形式，只有根层级的属性变为了只读。属性的值都会被原样存储和暴露，ref 不会解包。
+
+浅层数据结构应该只用于组件的根级数据，将其嵌套在深层次的响应式对象中，会使创建的树由不一致的响应行为，可能很难理解和调试。
+~~~javascript
+const state = shallowReadonly({
+    foo: 1,
+    nested: {
+        bar: 2
+    }
+});
+
+state.foo++;
+isReadonly(state.nested);
+state.nested.bar++;
+~~~
+## 十四、toRaw
+返回由 reactive()、readonly()、shallowReactive() 或者 shalowReadonly()
+创建的代理对应的原始对象。
+
+这是一个可以用于临时读取而不引起代理访问/跟踪开销，或是写入而不出发更改的特殊方法。不建议保存对原始对象的持久引用。
+~~~javascript
+const foo = {};
+const reactiveFoo = reactive(foo);
+console.log(toRaw(reactiveFoo) === foo); // true
+~~~
+## 十五、markRow
+将一个对象标记为不可转为代理，返回该对象本身。
+~~~javascript 
+const foo = markRaw({});
+console.log(isReactive(reactive(foo))); // false
+
+const bar = reactive({foo});
+console.log(isReactive(bar.foo)); // false
+~~~
+## 十六、effectScope
+创建一个 effect 作用域，可以捕获其中所创建的响应式副作用（即计算属性和侦听器），这样捕获到的副作用可以一起处理。
+~~~javascript 
+const scope = effectScope();
+
+scope.run(() => {
+    const doubled = computed(() => counter.value * 2);
+    watch(doubled, () => console.log(doubled.value));
+    watchEffect(() => console.log('Count: ', doubled.value));
+});
+
+scope.stop();
+~~~
+## 十七、getCurrentScope
+获取当前活跃的 effect 作用域
+## 十八、onScopeDispose 
+在当前活跃的作用域上注册一个处理回调函数，当相关的 effect 作用域停止时会调用这个回调函数。
+
+这个方法可作为复用的组合式函数中的 onMounted 的替代品，它不与组件耦合，因为每个 Vue 组件的 setup 函数也是在一个 effect 作用域内调用的。
+
