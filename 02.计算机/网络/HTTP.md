@@ -9,18 +9,18 @@ Http 协议是基于请求-响应的形式交互数据的无状态协议。客�
 ## 二、版本
 http 目前有 1.0、1.1、2.0、3.0 四个版本。
 
-### http 1.0 （tcp）
+### 1 http 1.0 （tcp）
 
 1.0 版本的 http 协议是非持久的，每一次的请求都需要重新建立 TCP 连接（三次握手），支持 GET、POST、HEAD 三种请求方法。
 
-### http 1.1 (tcp)
+### 2 http 1.1 (tcp)
 
 1. 支持长连接，默认不关闭，可以被每个请求复用
 2. 提供了管道机制，允许多个请求同时发送，增加并发性
 3. HTTP 1.1 请求头新增了 host 字段，用来处理服务器存在多个虚拟主机的情况
 4. 提供身份认证机制，设置特殊的状态码和头部进行身份认证
 
-### http 2.0 (tcp)
+### 3 http 2.0 (tcp)
 
 1. 支持全双工请求
 2. 支持服务端推送
@@ -28,7 +28,7 @@ http 目前有 1.0、1.1、2.0、3.0 四个版本。
 4. 增加头部信息压缩机制（gzip、compress)
 5. 增加头部信息索引表
 
-### http 3.0 (quic-udp)
+### 4 http 3.0 (quic-udp)
 
 QUIC (Quick UDP Internet Connections)是基于UDP的传输层协议，提供像 TCP 一样的可靠性。
 
@@ -40,20 +40,20 @@ QUIC (Quick UDP Internet Connections)是基于UDP的传输层协议，提供像 
 
 ## 三、http 连接建立的过程
 
-### 基于 TCP 的三次握手：
+### 1 基于 TCP 的三次握手：
 
 1. 客户端返送 [SYN] 标记的包，Seq 初始序列号为 x,发送完成后客户端进入，SYNC_SEND 状态
 2. 服务器返回 [SYN, ACK] 服务端进入 SYN_SEND 状态
 3. 客户端返回 [ACK]，进入 ESTABLISHED 状态，服务端接收到数据包后也进入 ESTABLISHED 状态。
 
-### 基于 TCP 的四次挥手：
+### 2 基于 TCP 的四次挥手：
 
 1. 客户端发送 [FIN]，进入 CLOSE_WAIT_1 状态
 2. 服务端发送 [ACK]，进入 CLOSE_WAIT_1 状态
 3. 服务端发送 [FIN]，进入 LAST_ACK 状态
 4. 客户端发送 [ACK]，进入 TIME_WAIT 状态，服务端接收到数据包，关闭连接进入 CLOSE 状态。客户端等待固定时间后，未收到 ACK 包，便关闭连接。
 
-### http 3.0 是基于 QUIC (UDP) 实现的，所以没有繁琐地创建连接的过程。
+### 3 http 3.0 是基于 QUIC (UDP) 实现的，所以没有繁琐地创建连接的过程。
 
 ## 四、http 的状态码
 
